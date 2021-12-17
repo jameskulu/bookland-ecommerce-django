@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Bookland - Searched Results {% endblock %}
+
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="details">
+  <h1> Upload your book </h1>
+  <p>Home - Upload your book</p>
+</div>
+<div class="outer-mainupload">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mainupload">
+
+      <label for="booktitle">Book title*</label>
+      <input type="text" name="title" required>
+
+      <label for="subcategory">Sub Category*</label>
+      <select name="subcategory" id="">
+        {% for cat in subcategories %}
+        <option value="{{ cat.id }}">{{ cat }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="author">Author*</label>
+      <input type="text" name="author" required>
+
+      <label for="price">Price*</label>
+      <input type="number" min='0' name="price" required>
+
+      <label for="description">Description</label>
+      <textarea required name="description" id=""></textarea>
+
+      <label for="image">Image</label>
+      <input type="file" name="image" accept="image/x-png,image/gif,image/jpeg" required>
+
+      <button class="adbtn">Post</button>
+
+    </div>
+  </form>
+</div>
+
+{% endblock %}

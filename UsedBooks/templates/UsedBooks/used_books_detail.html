@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Bookland - {{products.title}} {% endblock %}
+
+{% load humanize %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="details">
+  <h1>Product Details</h1>
+  <p>Used Books - Details</p>
+</div>
+
+<div class="product-detail-page">
+  <div class="picture-details">
+    <div class="picture-details-img"> <img src="{{ products.image.url }}" alt="{{ products.title }}"></div>
+    <div class="details-info">
+      <p>By {{ products.author }}</p>
+      <h1>{{ products.title }}</h1>
+      <p class="price">Rs. {{ products.price }}.00 </p>
+      <p>Category : {{ products.subcategory.name }}</p>
+
+      <div class="seller-details">
+        <div class="seller-details-header">
+          <h3>Seller Details</h3>
+        </div>
+        <div class="seller-details-body">
+          <p><b>Sold By</b> : {{ products.user.first_name }} {{ products.user.last_name }}</p>
+          <p><b>Email</b> : {{ products.user.email }}</p>
+          <p><b>Address</b> : {{ products.user.profile.address }}</p>
+          <p><b>Phone</b> : {{ products.user.phone }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="product-description">
+    <div class="product-description-header">
+      <h1>Description</h1>
+    </div>
+    <div class="describe">
+      <p>{{ products.description }}</p>
+    </div>
+  </div>
+  <div class="product-comments">
+    <div class="product-comments-header">
+      <h1>Comments</h1>
+    </div>
+    <div class="comment" id='used-comment'>
+
+      {% include 'UsedBooks/used_books_comments.html' %}
+
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+  $(document).ready(function (event) {
+    $(document).on('submit', '.usedcomment-form-ajax', function (event) {
+      event.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function (response) {
+          $('#used-comment').html(response['form'])
+        },
+        error: function (rs, e) {
+          console.log(rs.responseText);
+        }
+      })
+    })
+  })
+</script>
+
+{% endblock %}

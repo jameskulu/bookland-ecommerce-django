@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Bookland - {{products.title}} {% endblock %}
+
+{% load widget_tweaks %}
+{% load humanize %}
+{% block content %}
+
+<div class="details">
+  <h1>Product Details </h1>
+  <p>Home - Product Details</p>
+</div>
+
+<div class="product-detail-page">
+  <div class="picture-details">
+    <div class="picture-details-img"> <img src="{{ products.image.url }}" alt="{{ products.title }}"></div>
+    <div class="details-info">
+      <p>By {{ products.author }}</p>
+      <h1>{{ products.title }}</h1>
+      <p class="price">Rs. {{products.price}}.00 </p>
+      <p>Category : {{ products.subcategory.category.name }}</p>
+      <p>{{products.intro}}</p>
+      <div class="cart">
+        <form action="{% url 'add-to-cart' products.id %}" method="POST">
+          {% csrf_token %}
+          <span>Quantity:</span>&nbsp;<input name='quantity' type="number" min="1" max="10" value="1">
+          <button class="addtocart"> Add to cart </button>
+        </form>
+      </div>
+      {% if is_favrioute == True %}
+      <a href="{% url 'wishlist' products.id %}"><i class="fas fa-heart"></i></a>
+      {% else %}
+      <a href="{% url 'wishlist' products.id %}"><i class="far fa-heart"></i></a>
+      {% endif %}
+
+    </div>
+
+  </div>
+  <div class="product-description">
+    <div class="product-description-header">
+      <h1>Description</h1>
+    </div>
+    <div class="describe">
+      <p>{{products.description}}</p>
+    </div>
+
+  </div>
+  <div class="product-comments">
+    <div class="product-comments-header">
+      <h1>Comments</h1>
+    </div>
+    <div class="comment" id='comment'>
+
+      {% include 'Books/comments.html' %}
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+  $(document).ready(function (event) {
+    $(document).on('submit', '.comment-form-ajax', function (event) {
+      event.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function (response) {
+          $('#comment').html(response['form'])
+        },
+        error: function (rs, e) {
+          console.log(rs.responseText);
+        }
+      })
+    })
+  })
+</script>
+
+{% endblock %}

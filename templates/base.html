@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    {% block title %}
+    Bookland - Best Online Book Store In Nepal
+    {% endblock %}
+  </title>
+  <link rel="icon" type="image/png" href="{% static 'images/icon.jpg' %} ">
+  <link rel="stylesheet" href="{% static 'vendors/css/swiper.css' %}">
+  <script src="{% static 'vendors/scripts/font-awesome.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/index-style.css' %}">
+  <script type="text/javascript" src="{% static 'vendors/scripts/jquery-3.4.1.slim.min.js' %}"></script>
+  <script>
+    $(document).ready(() => {
+      $("#nav-id").find(".active").removeClass("active");
+    })
+  </script>
+</head>
+
+<body>
+  <main>
+
+    <!-- Header Section -->
+    <div class="header">
+      <div class="inner-header">
+        <div class="nav-bar-icon">
+          <i class="fal fa-bars"></i>
+        </div>
+        <div class="logo">
+          <a href="{% url 'home' %}"><img id="logo-img" src="{% static 'images/bookland-logo2.jpg' %}"
+              alt="bookland logo"></a>
+        </div>
+        <div class="nav">
+          <ul class="nav-links" id='nav-id'>
+            <li id="home-nav" class="nav-link-list active"><a href="{% url 'home' %}">Home</a></li>
+            <li id="category-nav" class="nav-link-list"><a href="#" onclick="return false;">Categories &nbsp;<i
+                  class="fas fa-angle-down"></i></a>
+              <ul class="dropdown-link">
+                {% for category in categories %}
+                <li><a href="{% url 'category' category %}">{{ category.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </li>
+            <li id="used-nav" class="nav-link-list"><a href="{% url 'used-books' %}">Used Books</a></li>
+            <li id="contact-nav" class="nav-link-list"><a href="{% url 'contact' %}">Contact</a></li>
+          </ul>
+        </div>
+        <div class="search-cart">
+          <span title="Light / Dark Mode Toggle"><input type="checkbox" name='theme' id="switch" /><label
+              for="switch">Toggle</label></span>
+          <span class="search-icon"><i class="fal fa-search"></i></span>
+          <div class="shooping-cart-icon-div">
+            <a href="{% url 'cart-detail' %}">
+              <i class="fal fa-shopping-cart"></i>
+              {% if not cart|length == 0 %}
+              <span>{{cart|length}}</span>
+              {% endif %}
+
+            </a>
+          </div>
+        </div>
+        <div class="login-signup-nav">
+
+          {% if user.is_authenticated %}
+
+          <div class="user-profile-nav">
+            <a href="" onclick="return false;">Hi, {{user.first_name}}&nbsp;<i class="fas fa-angle-down"></i></a>
+            <ul class="dropdown-link2">
+              <li><a href="{% url 'manage-profile' %}">Manage Account</a></li>
+              <li><a href="{% url 'orders' %}">My Orders</a></li>
+              <li><a href="{% url 'favrioute-list' %}">My Wishlist</a></li>
+              <hr style="width: 120px;">
+              <li><a href="{% url 'category-form' %}">Post Your Book</a></li>
+              <li><a href="{% url 'listed-books' %}">My Listed Books</a></li>
+              <hr style="width: 120px;">
+              <li><a href="/accounts/logout/?next={{request.path}}">Log Out</a></li>
+            </ul>
+          </div>
+
+          {% else %}
+
+          <a href="{% url 'login' %}"><button>Log In / Sign Up</button></a>
+
+          {% endif %}
+        </div>
+      </div>
+      <div class="home-search">
+        <form action="{% url 'search' %}" method="GET">
+          <input type="text" required placeholder="Search for books.." name="q">
+          <button type="submit"> <i class="fal fa-search"></i></button>
+        </form>
+      </div>
+    </div>
+
+    <!-- For Message -->
+    {% for message in messages %}
+    <div class="{{ message.tags }}" id='success'>
+      <p><i class="far fa-check-circle"></i>&nbsp;{{ message }}</p>
+      <span id="message-close-btn"><i class="fal fa-times"></i></span>
+    </div>
+    {% endfor %}
+
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="inner-footer">
+        <div class="inner-footer-first">
+          <h1>Our Mission</h1>
+          <p>Our goal is to give the customers opportunity to enjoy high-quality services to order and receive the best
+            books. Choose your favorite book with us!
+          <p> At Bookland, you can browse and buy books online at the lowest everyday prices. </p>
+        </div>
+        <div class="inner-footer-second">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'used-books' %}">Used Books</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+          </ul>
+        </div>
+        <div class="inner-footer-third">
+          <h3>Our Services</h3>
+          <p><i class="fas fa-truck"></i>Free Delivery</p>
+          <p><i class="fas fa-undo-alt"></i>Free Returns</p>
+          <p><i class="fas fa-question-circle"></i>Customer Support</p>
+
+        </div>
+        <div class="inner-footer-fourth">
+          <h3>Contact Us</h3>
+          <div class="head-office">
+            <i class="fas fa-location-circle"></i>
+            <div class="head-office-desc">
+              <p>Head Office:</p>
+              <span>Durbarmarg, Kathmandu</span>
+            </div>
+          </div>
+          <div class="phone-number">
+            <i class="fas fa-phone-square"></i>
+            <div class="phone-number-desc">
+              <p>Phone number:</p>
+              <span>+977 9843123845</span>
+            </div>
+          </div>
+          <div class="email">
+            <i class="fas fa-envelope-square"></i>
+            <div class="email-desc">
+              <p>Email:</p>
+              <span>bookland@hotmail.com</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="second-footer">
+      <p>Copyright ©2020 All rights reserved | Bookland</p>
+    </div>
+
+  </main>
+
+  <!-- Swiper JS -->
+  <script src="{% static 'vendors/scripts/swiper.js' %}"></script>
+  <script>
+    const darkLogo = "{% static 'images/bookland-logo-dark.jpg' %}"
+    const lightLogo = "{% static 'images/bookland-logo2.jpg' %}"
+  </script>
+  <script src="{% static 'scripts/main.js' %}"></script>
+
+</body>
+
+</html>
